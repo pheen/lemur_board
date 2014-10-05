@@ -1,0 +1,118 @@
+html, body {
+  height: 100%;
+  background: #eee;
+}
+
+nav {
+  padding: 1.5vh 2vh;
+  display: flex;
+  justify-content: space-around;
+  background: #000;
+  color: #aaa;
+  font-size: 3.25vh;
+  -webkit-user-select: none;
+  user-select: none;
+
+  ul {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    text-transform: uppercase;
+    cursor: pointer;
+
+    li.selected {
+      color: #fff;
+      text-shadow: 0 0 5px #fff;
+    }
+  }
+}
+
+main {
+  width: auto;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: nowrap;
+  -webkit-user-select: none;
+  user-select: none;
+
+  .wrapper {
+    position: relative;
+    width: 200vw;
+  }
+
+  section {
+    width: 100vw;
+    height: 94vh;
+    display: inline-block;
+    overflow-y: scroll;
+    vertical-align: top;
+  }
+}
+
+.calendar {
+  li {
+    display: flex;
+    justify-content: space-around;
+    border-bottom: 1px solid #000;
+
+    &.date {
+      background: #fff;
+    }
+
+    img {
+      height: 12vh;
+      margin: 2vmin;
+    }
+
+    span {
+      font-size: 6vmin;
+      line-height: 14vmin;
+    }
+  }
+}
+
+.challenge {
+  position: relative;
+
+  .popup {
+    // display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 60%;
+    height: 100%;
+    padding: 3vmin;
+    background: rgba(0, 0, 0, .85);
+    color: #fff;
+  }
+
+  .vs {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 4vw;
+    height: 10vw;
+    min-height: 100px;
+
+    img {
+      height: 100%;
+    }
+
+    span {
+      font-size: 6vw;
+      line-height: 23vmin;
+    }
+  }
+
+  .challengers {
+    width: 70vw;
+    margin: 5vmax auto 0;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+
+    img {
+      height: 15vmin;
+      margin: .5vmin;
+    }
+  }
+}

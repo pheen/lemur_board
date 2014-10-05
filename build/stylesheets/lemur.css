@@ -1,0 +1,80 @@
+nav {
+  padding: 1.5vh 2vh;
+  display: flex;
+  justify-content: space-around;
+  background: #000;
+  color: #aaa;
+  font-size: 3.25vh;
+  -webkit-user-select: none;
+  user-select: none; }
+  nav ul {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    text-transform: uppercase;
+    cursor: pointer; }
+    nav ul li.selected {
+      color: #fff;
+      text-shadow: 0 0 5px #fff; }
+
+main {
+  width: auto;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: nowrap;
+  -webkit-user-select: none;
+  user-select: none; }
+  main .wrapper {
+    position: relative;
+    width: 200vw; }
+  main section {
+    width: 100vw;
+    height: 94vh;
+    display: inline-block;
+    overflow-y: scroll;
+    vertical-align: top; }
+
+.calendar li {
+  display: flex;
+  justify-content: space-around;
+  border-bottom: 1px solid #000; }
+  .calendar li.date {
+    background: #fff; }
+  .calendar li img {
+    height: 12vh;
+    margin: 2vmin; }
+  .calendar li span {
+    font-size: 6vmin;
+    line-height: 14vmin; }
+
+.challenge {
+  position: relative; }
+  .challenge .popup {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 60%;
+    height: 100%;
+    padding: 3vmin;
+    background: rgba(0, 0, 0, 0.85);
+    color: #fff; }
+  .challenge .vs {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 4vw;
+    height: 10vw;
+    min-height: 100px; }
+    .challenge .vs img {
+      height: 100%; }
+    .challenge .vs span {
+      font-size: 6vw;
+      line-height: 23vmin; }
+  .challenge .challengers {
+    width: 70vw;
+    margin: 5vmax auto 0;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap; }
+    .challenge .challengers img {
+      height: 15vmin;
+      margin: .5vmin; }

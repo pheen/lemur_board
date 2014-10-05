@@ -1,0 +1,11 @@
+%nav
+  %ul
+    %li{ 'ng-class' => '{ selected: page == 1 }' } calendar
+    %li{ 'ng-class' => '{ selected: page == 2 }' } tournament
+    %li{ 'ng-class' => '{ selected: page == 3 }' } challenge
+
+%main
+  .wrapper
+    = partial('calendar')
+    = partial('tournament')
+    = partial('challenge')

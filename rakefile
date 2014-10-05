@@ -1,0 +1,84 @@
+require 'byebug'
+
+namespace :assets do
+  desc 'automagically compiles all assets'
+  task :compile do
+    Compiler.run
+  end
+
+  namespace :compile do
+    desc 'compile for deployment'
+    task :compress do
+      Compiler.run(compression: true)
+    end
+  end
+
+  desc 'destroyer of assets'
+  task :destroy do
+    `rm -rf build`
+    puts 'Assets destroyed.'
+  end
+end
+
+class Compiler
+  BUILD_DIR = 'build'
+  ASSET_DIR = 'assets'
+
+  def self.run(opts = {})
+    Compiler.new(opts).compile_all
+  end
+
+  def initialize(opts = {})
+    @compression = opts.fetch(:compression, false)
+  end
+
+  def compile_all
+    create_directories
+
+    compile_coffeescript
+    compile_scss
+  end
+
+private
+
+  def create_directories
+    Dir["#{ASSET_DIR}/**/"].each do |dir|
+      dest = dir.sub(/^#{ASSET_DIR}\//, '').chop
+      next if dest.empty?
+
+      `mkdir -p #{BUILD_DIR}/#{dest}`
+    end
+  end
+
+  def compile_coffeescript
+    puts 'Brewing coffee..'
+
+    compile('.coffee') do |file_path|
+      if @compression
+        `cpp #{file_path} | coffee -s -p | uglifyjs`
+      else
+        `cpp #{file_path} | coffee -s -p`
+      end
+    end
+  end
+
+  def compile_scss
+    puts 'Struggling to open the blinds..'
+
+    compile('.scss') do |file_path|
+      next if file_path =~ /\/_/
+      `scss #{file_path}`
+    end
+  end
+
+  def compile(ext)
+    Dir["#{ASSET_DIR}/**/*#{ext}"].each do |file_path|
+      dest = file_path.sub(ASSET_DIR, 'build').sub(ext, '')
+      result = yield(file_path) or next
+
+      File.open(dest, 'w') { |file| file.write(result) }
+      puts "created: #{dest}"
+    end
+  end
+
+end
