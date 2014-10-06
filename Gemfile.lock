@@ -10,40 +10,61 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
+    angelo (0.2.0)
+      mime-types
+      reel
     awesome_print (1.2.0)
+    celluloid (0.16.0)
+      timers (~> 4.0.0)
+    celluloid-io (0.16.0)
+      celluloid (>= 0.16.0)
+      nio4r (>= 1.0.0)
     columnize (0.8.9)
-    cuba (3.3.0)
-      rack
-    cuba-haml (1.0)
-      cuba
-      haml
     debugger-linecache (1.2.0)
     haml (4.0.5)
       tilt
     hiredis (0.5.2)
+    hitimes (1.2.2)
+    http (0.6.2)
+      http_parser.rb (~> 0.6.0)
+    http_parser.rb (0.6.0)
+    mime-types (2.3)
     msgpack (0.5.8)
+    mustermann (0.3.1)
+      tool (~> 0.2)
     nido (0.0.1)
+    nio4r (1.0.1)
     ohm (2.0.1)
       msgpack
       nido
       redic
-    rack (1.6.0.beta)
     rake (10.3.2)
     redic (1.1.1)
       hiredis
+    reel (0.5.0)
+      celluloid (>= 0.15.1)
+      celluloid-io (>= 0.15.0)
+      http (>= 0.6.0.pre)
+      http_parser.rb (>= 0.6.0)
+      websocket_parser (>= 0.1.6)
     sass (3.4.5)
     slop (3.6.0)
     tilt (2.0.1)
+    timers (4.0.1)
+      hitimes
+    tool (0.2.2)
+    websocket_parser (0.1.6)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  angelo (= 0.2.0)
   awesome_print
   byebug!
-  cuba (= 3.3.0)
-  cuba-haml (= 1.0)
   haml (= 4.0.5)
+  mustermann (= 0.3.1)
   ohm (= 2.0.1)
   rake
   sass (= 3.4.5)
+  tilt (= 2.0.1)

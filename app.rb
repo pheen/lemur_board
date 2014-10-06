@@ -1,37 +1,29 @@
-require 'cuba'
-require 'cuba/haml'
+require 'angelo'
+require 'angelo/mustermann'
+require 'tilt/haml'
 require 'ohm'
+require 'awesome_print'
 require 'byebug'
 
-Cuba.plugin Cuba::Haml
-Cuba.settings[:haml][:views] = 'app/views'
-Cuba.settings[:haml][:layout_path] = "app/views"
+class Lemur < Angelo::Base
+  include Angelo::Mustermann
 
-Cuba.define do
-  on root do
-    haml('main')
+  get '/assets/(?<path>.*)', type: :regexp do
+    responder.headers['Content-Type'] = case params[:path]
+      when /\.js$/
+        'application/javascript'
+      when /\.css$/
+        'text/css'
+    end
+    dir = params[:path] =~ /libraries/ ? 'app/assets' : 'build'
+
+    File.read("#{dir}/#{params[:path]}")
   end
 
-  on 'assets' do
-    on /(.*libraries.*)/ do |path|
-      set_content_type(path)
-      res.write(File.read("app/assets/#{path}"))
-    end
-
-    on /(.*)/ do |path|
-      set_content_type(path)
-      res.write(File.read("build/#{path}"))
-    end
-
+  get '/' do
+    template = Tilt::HamlTemplate.new('app/views/layout.haml')
+    template.render
   end
-
 end
 
-def set_content_type(path)
-  res.headers["Content-Type"] = case path
-    when /javascripts/
-      'application/javascript'
-    when /stylesheets/
-      'text/css'
-  end
-end
+Lemur.run

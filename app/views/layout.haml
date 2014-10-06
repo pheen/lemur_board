@@ -15,4 +15,4 @@
 %script{ src: 'assets/javascripts/angular/directives/swipeable.js',         type: 'text/javascript' }
 
 %body.swipeable{ 'ng-app' => 'lemur', 'ng-controller' => 'LemurController' }
-  = content
+  = Tilt::HamlTemplate.new('app/views/main.haml').render

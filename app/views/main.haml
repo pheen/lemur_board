@@ -6,6 +6,6 @@
 
 %main
   .wrapper
-    = partial('calendar')
-    = partial('tournament')
-    = partial('challenge')
+    = Tilt::HamlTemplate.new('app/views/calendar.haml').render
+    = Tilt::HamlTemplate.new('app/views/tournament.haml').render
+    = Tilt::HamlTemplate.new('app/views/challenge.haml').render
