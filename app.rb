@@ -4,6 +4,8 @@ require 'ohm'
 require 'byebug'
 
 Cuba.plugin Cuba::Haml
+Cuba.settings[:haml][:views] = 'app/views'
+Cuba.settings[:haml][:layout_path] = "app/views"
 
 Cuba.define do
   on root do
