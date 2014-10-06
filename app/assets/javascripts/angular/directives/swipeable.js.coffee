@@ -2,6 +2,8 @@ lemur.directive 'swipeable', [
     '$log', ($log) ->
         restrict: 'C'
         link: (scope, elem, attrs) ->
+            scope.page = 1
+
             $(elem).on 'swiperight', ->
                 $wrapper = $(this).find('.wrapper')
                 leftPos  = $wrapper.position().left

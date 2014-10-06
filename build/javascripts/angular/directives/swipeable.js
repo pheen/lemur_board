@@ -4,6 +4,7 @@
       return {
         restrict: 'C',
         link: function(scope, elem, attrs) {
+          scope.page = 1;
           $(elem).on('swiperight', function() {
             var $wrapper, leftPos, pages, winWidth;
             $wrapper = $(this).find('.wrapper');
