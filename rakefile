@@ -22,7 +22,7 @@ end
 
 class Compiler
   BUILD_DIR = 'build'
-  ASSET_DIR = 'assets'
+  ASSET_DIR = 'app/assets'
 
   def self.run(opts = {})
     Compiler.new(opts).compile_all

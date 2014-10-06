@@ -1,6 +1,7 @@
-require 'byebug'
 require 'cuba'
 require 'cuba/haml'
+require 'ohm'
+require 'byebug'
 
 Cuba.plugin Cuba::Haml
 
@@ -12,7 +13,7 @@ Cuba.define do
   on 'assets' do
     on /(.*libraries.*)/ do |path|
       set_content_type(path)
-      res.write(File.read("assets/#{path}"))
+      res.write(File.read("app/assets/#{path}"))
     end
 
     on /(.*)/ do |path|

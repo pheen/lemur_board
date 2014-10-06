@@ -20,8 +20,17 @@ GEM
     debugger-linecache (1.2.0)
     haml (4.0.5)
       tilt
+    hiredis (0.5.2)
+    msgpack (0.5.8)
+    nido (0.0.1)
+    ohm (2.0.1)
+      msgpack
+      nido
+      redic
     rack (1.6.0.beta)
     rake (10.3.2)
+    redic (1.1.1)
+      hiredis
     sass (3.4.5)
     slop (3.6.0)
     tilt (2.0.1)
@@ -35,5 +44,6 @@ DEPENDENCIES
   cuba (= 3.3.0)
   cuba-haml (= 1.0)
   haml (= 4.0.5)
+  ohm (= 2.0.1)
   rake
   sass (= 3.4.5)
