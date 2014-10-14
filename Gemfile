@@ -7,6 +7,8 @@ gem 'ohm', '2.0.1'
 gem 'tilt', '2.0.1'
 gem 'haml', '4.0.5'
 gem 'sass', '3.4.5'
+gem 'bcrypt', '3.1.7'
 
+gem 'listen'
 gem 'byebug', github: 'deivid-rodriguez/byebug'
 gem 'awesome_print'

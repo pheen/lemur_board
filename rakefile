@@ -1,6 +1,64 @@
+require 'ohm'
+require 'listen'
 require 'byebug'
 
+Dir['./lib/*'].each { |file| require file }
+Dir['./app/models/*'].each { |file| require file }
+
+desc 'magic console'
+task :console do
+  byebug
+end
+
+namespace :redis do
+  desc 'everybody gets a new car!'
+  task :seed do
+    users = 15.times.map do |i|
+      attributes = {
+        email: "joel#{i}@localhost",
+        password_hash: 'password',
+        first_name: 'Joel',
+        last_name: "K the the #{i}th",
+        img: 'joel.jpg'
+      }
+
+      puts "Creating #{attributes[:first_name]} #{attributes[:last_name]}"
+      User.create(attributes)
+    end
+
+    users.each do |user|
+      [1,2,3].sample.times do
+        attributes = {
+          challenger_id: user.id,
+          opponent_id: users.sample.id,
+          timestamp: Time.now.to_i - rand(604800),
+          accepted: [true, false].sample
+        }
+
+        puts "Creating #{attributes[:challenger_id]} vs #{attributes[:opponent_id]}"
+        Challenge.create(attributes)
+      end
+    end
+  end
+
+  desc "destroyer of redis keys"
+  task :destroy do
+    [
+      User,
+      Challenge
+    ].each do |klass|
+      klass.all.each(&:delete)
+      puts "Cleaned #{klass}"
+    end
+  end
+end
+
 namespace :assets do
+  desc 'automagically compiles assets on save'
+  task :listen do
+    Compiler.listen
+  end
+
   desc 'automagically compiles all assets'
   task :compile do
     Compiler.run
@@ -24,12 +82,32 @@ class Compiler
   BUILD_DIR = 'build'
   ASSET_DIR = 'app/assets'
 
+  def self.listen
+    Compiler.new.listen
+  end
+
   def self.run(opts = {})
     Compiler.new(opts).compile_all
   end
 
   def initialize(opts = {})
     @compression = opts.fetch(:compression, false)
+  end
+
+  def listen
+    puts "Listening to #{ASSET_DIR}..."
+
+    listener = Listen.to(ASSET_DIR) do |modified, added, removed|
+      file_paths = modified | added | removed
+
+      file_paths.each do |file_path|
+        puts "Compiling... #{file_path}"
+        compile_single(file_path)
+      end
+    end
+
+    listener.start # not blocking
+    sleep
   end
 
   def compile_all
@@ -39,7 +117,35 @@ class Compiler
     compile_scss
   end
 
+  def compile_ext(ext)
+    case ext
+    when '.coffee'
+      compile_
+    when '.scss'
+      compile_
+    end
+  end
+
 private
+
+  def compile_single(file_path)
+    result = case file_path
+             when /\.coffee/
+                ext = '.coffee'
+               `cpp #{file_path} | coffee -s -p`
+             when /\.scss/
+                ext = '.scss'
+               `scss #{file_path}`
+             end
+
+    puts "Compiled #{file_path}"
+
+    dest = file_path.sub(ASSET_DIR, 'build').sub(ext, '')
+    puts "Saving... #{dest}"
+
+    File.open(dest, 'w') { |file| file.write(result) }
+    puts "Saved #{dest}"
+  end
 
   def create_directories
     Dir["#{ASSET_DIR}/**/"].each do |dir|

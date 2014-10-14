@@ -14,6 +14,7 @@ GEM
       mime-types
       reel
     awesome_print (1.2.0)
+    bcrypt (3.1.7)
     celluloid (0.16.0)
       timers (~> 4.0.0)
     celluloid-io (0.16.0)
@@ -21,6 +22,7 @@ GEM
       nio4r (>= 1.0.0)
     columnize (0.8.9)
     debugger-linecache (1.2.0)
+    ffi (1.9.5)
     haml (4.0.5)
       tilt
     hiredis (0.5.2)
@@ -28,6 +30,10 @@ GEM
     http (0.6.2)
       http_parser.rb (~> 0.6.0)
     http_parser.rb (0.6.0)
+    listen (2.7.11)
+      celluloid (>= 0.15.2)
+      rb-fsevent (>= 0.9.3)
+      rb-inotify (>= 0.9)
     mime-types (2.3)
     msgpack (0.5.8)
     mustermann (0.3.1)
@@ -39,6 +45,9 @@ GEM
       nido
       redic
     rake (10.3.2)
+    rb-fsevent (0.9.4)
+    rb-inotify (0.9.5)
+      ffi (>= 0.5.0)
     redic (1.1.1)
       hiredis
     reel (0.5.0)
@@ -61,8 +70,10 @@ PLATFORMS
 DEPENDENCIES
   angelo (= 0.2.0)
   awesome_print
+  bcrypt (= 3.1.7)
   byebug!
   haml (= 4.0.5)
+  listen
   mustermann (= 0.3.1)
   ohm (= 2.0.1)
   rake

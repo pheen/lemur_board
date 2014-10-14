@@ -1,5 +1,11 @@
 %section
-  Calendar
+  %ul.calendar
+    %li{ 'ng-repeat' => 'challenge in challenges | orderBy:"-timestamp"', }
+      %img{ :src => 'assets/images/joel.jpg' }
+      -# %span vs
+      %span {{challenge.timestamp}}
+      %img{ :src => 'assets/images/joel.jpg' }
+
 -#   %ul.calendar
 -#     %li
 -#       %img{ :src => image_path('joel.png') }

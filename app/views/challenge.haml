@@ -1,12 +1,15 @@
 -# %section.challenge{ 'ng-controller' => 'ChallengeController' }
 %section.challenge
-  challenge
--#   .popup{ 'ng-show' => 'selectedUser' }
--#     %h2 {{selectedUser.first_name}} {{selectedUser.last_name}}
--#     %h2 Wins: 5
--#     %h2 Losses: 5
--#     %h2 Rank: 1
--#     %button{ 'ng-click' => 'sendChallenge' } Challenge!
 
--#   .challengers
--#     %img{ 'ng-repeat' => 'user in users', :src => '{{user.img}}', :challenger => '{{user.id}}' }
+  .popup{ 'ng-show' => 'userToSmite' }
+    %h2 {{userToSmite.first_name}} {{userToSmite.last_name}}
+    %h2 Wins: 5
+    %h2 Losses: 5
+    %h2 Rank: 1
+    %input{ :type => 'datetime-local', 'ng-model' => 'challengeStart' }
+    %h1 {{start}}
+    %button{ 'ng-click' => 'sendChallenge()' } Challenge!
+
+  .challengers
+    %img{ 'ng-repeat' => 'user in users', :src => 'assets/images/{{user.img}}', :challenger => '{{user.id}}', 'ng-click' => 'openChallengeForm(user)' }
+
