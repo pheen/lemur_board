@@ -15,10 +15,10 @@ module AppHelper
   end
 
   def logged_in?
-    mystery = unless cookie('mystery').empty?
-      BCrypt::Password.new(cookie('mystery'))
-    else
+    mystery = if cookie('mystery').empty?
       false
+    else
+      BCrypt::Password.new(cookie('mystery'))
     end
 
     if current_user && mystery == "#{current_user.email}#{current_user.password_hash}"
@@ -44,6 +44,21 @@ module AppHelper
   def asset_path(path)
     dir = path =~ /(libraries|images)/ ? 'app/assets' : 'build'
     "#{dir}/#{path}"
+  end
+
+  def successful_login
+    user = User.find(email: params['email']).first
+    if user && user.login(params['password'])
+      yield user
+    end
+  end
+
+  def self.included(base)
+    # misc routes
+    base.get '/assets/(?<path>.*)', type: :regexp do
+      set_content_type
+      File.read(asset_path(params[:path]))
+    end
   end
 
 end

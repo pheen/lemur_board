@@ -94,11 +94,26 @@ main {
     position: absolute;
     top: 0;
     left: 0;
-    width: 60%;
+    width: 100%;
     height: 100%;
-    padding: 3vmin;
     background: rgba(0, 0, 0, 0.85);
     color: #fff; }
+    .challenge .popup .form {
+      position: relative;
+      height: 50vh;
+      max-height: 450px;
+      width: 50vw;
+      max-width: 900px;
+      margin: 19vh auto;
+      z-index: 2;
+      background: red; }
+    .challenge .popup .blocker {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      z-index: 1; }
   .challenge .vs {
     display: flex;
     justify-content: space-around;
@@ -119,3 +134,77 @@ main {
     .challenge .challengers img {
       height: 15vmin;
       margin: .5vmin; }
+
+/**
+ * famous-angular - Bring structure to your Famo.us apps with the power of AngularJS. Famo.us/Angular integrates seamlessly with existing Angular and Famo.us apps.
+ * @version v0.4.0
+ * @link https://github.com/Famous/famous-angular
+ * @license MPL v2.0
+ */
+body {
+  margin: 0; }
+
+fa-app, .fa-app {
+  display: block;
+  margin: 0px;
+  padding: 0px;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-perspective: 0;
+  perspective: none;
+  position: relative; }
+
+.famous-angular-clipping-container {
+  overflow: hidden;
+  width: 100%;
+  height: 100%; }
+
+.famous-angular-container {
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  -webkit-backface-visibility: visible;
+  backface-visibility: visible;
+  pointer-events: none;
+  height: 100%;
+  width: 100%; }
+
+.famous-container, .famous-group {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
+  overflow: visible;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  -webkit-backface-visibility: visible;
+  backface-visibility: visible;
+  pointer-events: none; }
+
+.famous-group {
+  width: 0px;
+  height: 0px;
+  margin: 0px;
+  padding: 0px;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d; }
+
+.famous-surface {
+  position: absolute;
+  -webkit-transform-origin: center center;
+  transform-origin: center center;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform-style: flat;
+  transform-style: flat;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  pointer-events: auto; }
+
+.famous-container-group {
+  position: relative;
+  width: 100%;
+  height: 100%; }

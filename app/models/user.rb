@@ -22,6 +22,7 @@ class User < Ohm::Model
 
   def public_attributes
     {
+      id: id,
       email: email,
       first_name: first_name,
       last_name: last_name,
@@ -31,6 +32,14 @@ class User < Ohm::Model
 
   def login(password)
     password_hash == password
+  end
+
+  def self.all_public_attributes
+    users = all.sort(by: :email).to_a.map(&:public_attributes)
+    users.reduce({}) do |hash, user_attrs|
+      hash[user_attrs[:id]] = user_attrs
+      hash
+    end
   end
 
 end

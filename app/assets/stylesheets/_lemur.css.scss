@@ -79,11 +79,30 @@ main {
     position: absolute;
     top: 0;
     left: 0;
-    width: 60%;
+    width: 100%;
     height: 100%;
-    padding: 3vmin;
     background: rgba(0, 0, 0, .85);
     color: #fff;
+
+    .form {
+      position: relative;
+      height: 50vh;
+      max-height: 450px;
+      width: 50vw;
+      max-width: 900px;
+      margin: 19vh auto;
+      z-index: 2;
+      background: red;
+    }
+
+    .blocker {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      z-index: 1;
+    }
   }
 
   .vs {

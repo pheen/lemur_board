@@ -1,38 +1,43 @@
 lemur.controller 'LemurController', [
-  '$scope', '$element', '$http',
-  ($scope, $element, $http) ->
+  '$scope', '$element', '$http', 'Wormhole',
+  ($scope, $element, $http, Wormhole) ->
     $scope.users = []
 
-    $scope.ws = new WebSocket('ws://' + window.document.location.host)
-    $scope.ws.onmessage = (message) ->
-      data = angular.fromJson(message.data)
+    Wormhole.scope = $scope
 
-      $scope.$apply ->
-        if data.current_user
-          $scope.current_user = data.current_user
+    Wormhole.current_user = (user) ->
+      $scope.currentUser = user
 
-        if data.users
-          $scope.users = data.users
+    Wormhole.users = (users) ->
+      $scope.users = users
+      $scope.opponents = _.omit(users, $scope.currentUser.id)
 
-        if data.challenges
-          for challenge in data.challenges
-            challenge.challenger_id = parseInt(challenge.challenger_id, 10)
-            challenge.opponent_id = parseInt(challenge.opponent_idp, 10)
-            challenge.timestamp = parseInt(challenge.timestamp, 10)
+    Wormhole.challenges = (challenges) ->
+      for challenge in challenges
+        challenge.challenger_id = parseInt(challenge.challenger_id, 10)
+        challenge.opponent_id = parseInt(challenge.opponent_id, 10)
+        challenge.timestamp = new Date(parseInt(challenge.timestamp, 10) * 1000)
 
-          $scope.challenges = data.challenges
+      $scope.challenges = challenges
 
-        if data.newChallenge
-          data.newChallenge.challenger_id = parseInt(data.newChallenge.challenger_id, 10)
-          data.newChallenge.opponent_id = parseInt(data.newChallenge.opponent_idp, 10)
-          data.newChallenge.timestamp = parseInt(data.newChallenge.timestamp, 10)
+    Wormhole.new_challenge = (challenge) ->
+      challenge.challenger_id = parseInt(challenge.challenger_id, 10)
+      challenge.opponent_id = parseInt(challenge.opponent_idp, 10)
+      challenge.timestamp = new Date(parseInt(challenge.timestamp, 10) * 1000)
 
-          $scope.challenges.push(data.newChallenge)
+      $scope.challenges.push(challenge)
 
     $scope.sendChallenge = ->
-      msg = JSON.stringify(issueChallenge: { email: $scope.userToSmite, time: $scope.challengeStart })
-      $scope.ws.send(msg)
+      msg = JSON.stringify
+        issueChallenge:
+          challenger_email: $scope.currentUser.emai
+          opponent_email: $scope.userToSmite
+          time: $scope.challengeStartTime
+      Wormhole.send(msg)
 
     $scope.openChallengeForm = (user) ->
       $scope.userToSmite = user.email
+
+    $scope.clearChallenge = ->
+      $scope.userToSmite = null
 ]
