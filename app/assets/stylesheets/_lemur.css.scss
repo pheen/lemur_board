@@ -1,137 +1,203 @@
 html, body {
   height: 100%;
-  background: #eee;
+  background: #434a54;
+  font-family: 'Calibri';
 }
 
-nav {
-  padding: 1.5vh 2vh;
+.bar {
+  z-index: 1;
+}
+
+img.profile {
+  display: block;
+  margin: 5vmin auto 2vmin;
+  height: 13vmax;
+  border: 5px solid #5e5f5f;
+  border-radius: 1000px;
+}
+
+.stats {
   display: flex;
   justify-content: space-around;
-  background: #000;
-  color: #aaa;
-  font-size: 3.25vh;
-  -webkit-user-select: none;
-  user-select: none;
 
-  ul {
-    width: 100%;
-    display: flex;
-    justify-content: space-around;
-    text-transform: uppercase;
-    cursor: pointer;
+  .wins, .losses {
+    text-align: center;
+    font-size: 4vmax;
 
-    li.selected {
-      color: #fff;
-      text-shadow: 0 0 5px #fff;
+    .place {
+      color: #5e5f5f;
+      font-size: 2vmax;
     }
+  }
+
+  .wins {
+    color: #91c67b;
+  }
+
+  .losses {
+    color: #cb6f6f;
   }
 }
 
-main {
-  width: auto;
-  overflow-x: hidden;
-  overflow-y: hidden;
-  white-space: nowrap;
-  -webkit-user-select: none;
-  user-select: none;
 
-  .wrapper {
-    position: relative;
-    width: 200vw;
+
+
+
+
+.calendar-item {
+  height: 74px;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: nowrap;
+  align-items: center;
+  background: #32393c;
+  border-top: 1px solid #0e1011;
+  box-shadow: 0 1px #5e5f5f inset, 0 1px #32393c;
+  color: #fff;
+
+  img {
+    margin: 0;
+    height: 30px;
+    border: 3px solid #5e5f5f;
+    border-radius: 1000px;
   }
 
-  section {
-    width: 100vw;
-    height: 94vh;
-    display: inline-block;
-    overflow-y: scroll;
-    vertical-align: top;
-  }
-}
-
-.calendar {
-  li {
-    display: flex;
-    justify-content: space-around;
-    border-bottom: 1px solid #000;
-
-    &.date {
-      background: #fff;
-    }
-
-    img {
-      height: 12vh;
-      margin: 2vmin;
-    }
-
-    span {
-      font-size: 6vmin;
-      line-height: 14vmin;
-    }
+  .time {
+    color: #5e5f5f;
+    font-size: 2vmax;
   }
 }
 
-.challenge {
-  position: relative;
 
-  .popup {
-    // display: none;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, .85);
-    color: #fff;
+// nav {
+//   padding: 1.5vh 2vh;
+//   display: flex;
+//   justify-content: space-around;
+//   background: #000;
+//   color: #aaa;
+//   font-size: 3.25vh;
+//   -webkit-user-select: none;
+//   user-select: none;
 
-    .form {
-      position: relative;
-      height: 50vh;
-      max-height: 450px;
-      width: 50vw;
-      max-width: 900px;
-      margin: 19vh auto;
-      z-index: 2;
-      background: red;
-    }
+//   ul {
+//     width: 100%;
+//     display: flex;
+//     justify-content: space-around;
+//     text-transform: uppercase;
+//     cursor: pointer;
 
-    .blocker {
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 100%;
-      z-index: 1;
-    }
-  }
+//     li.selected {
+//       color: #fff;
+//       text-shadow: 0 0 5px #fff;
+//     }
+//   }
+// }
 
-  .vs {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 4vw;
-    height: 10vw;
-    min-height: 100px;
+// main {
+//   width: auto;
+//   overflow-x: hidden;
+//   overflow-y: hidden;
+//   white-space: nowrap;
+//   -webkit-user-select: none;
+//   user-select: none;
 
-    img {
-      height: 100%;
-    }
+//   .wrapper {
+//     position: relative;
+//     width: 200vw;
+//   }
 
-    span {
-      font-size: 6vw;
-      line-height: 23vmin;
-    }
-  }
+//   section {
+//     width: 100vw;
+//     height: 94vh;
+//     display: inline-block;
+//     overflow-y: scroll;
+//     vertical-align: top;
+//   }
+// }
 
-  .challengers {
-    width: 70vw;
-    margin: 5vmax auto 0;
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
+// .calendar {
+//   li {
+//     display: flex;
+//     justify-content: space-around;
+//     border-bottom: 1px solid #000;
 
-    img {
-      height: 15vmin;
-      margin: .5vmin;
-    }
-  }
-}
+//     &.date {
+//       background: #fff;
+//     }
+
+//     img {
+//       height: 12vh;
+//       margin: 2vmin;
+//     }
+
+//     span {
+//       font-size: 6vmin;
+//       line-height: 14vmin;
+//     }
+//   }
+// }
+
+// .challenge {
+//   position: relative;
+
+//   .popup {
+//     // display: none;
+//     position: absolute;
+//     top: 0;
+//     left: 0;
+//     width: 100%;
+//     height: 100%;
+//     background: rgba(0, 0, 0, .85);
+//     color: #fff;
+
+//     .form {
+//       position: relative;
+//       height: 50vh;
+//       max-height: 450px;
+//       width: 50vw;
+//       max-width: 900px;
+//       margin: 19vh auto;
+//       z-index: 2;
+//       background: red;
+//     }
+
+//     .blocker {
+//       position: absolute;
+//       top: 0;
+//       left: 0;
+//       height: 100%;
+//       width: 100%;
+//       z-index: 1;
+//     }
+//   }
+
+//   .vs {
+//     display: flex;
+//     justify-content: space-around;
+//     margin-top: 4vw;
+//     height: 10vw;
+//     min-height: 100px;
+
+//     img {
+//       height: 100%;
+//     }
+
+//     span {
+//       font-size: 6vw;
+//       line-height: 23vmin;
+//     }
+//   }
+
+//   .challengers {
+//     width: 70vw;
+//     margin: 5vmax auto 0;
+//     display: flex;
+//     justify-content: space-around;
+//     flex-wrap: wrap;
+
+//     img {
+//       height: 15vmin;
+//       margin: .5vmin;
+//     }
+//   }
+// }

@@ -1,6 +1,33 @@
 (function() {
   lemur.controller('LemurController', [
-    '$scope', '$element', '$http', 'Wormhole', function($scope, $element, $http, Wormhole) {
+    '$scope', '$window', '$element', '$http', '$famous', 'Wormhole', function($scope, $window, $element, $http, $famous, Wormhole) {
+      var EventHandler, calcuateHeight;
+      calcuateHeight = function() {
+        $scope.windowHeight = $window.innerHeight;
+        $scope.barHeight = $window.innerHeight * 0.07;
+        $scope.bodyHeight = $window.innerHeight - $scope.barHeight;
+        $scope.calendarItemHeight = $window.innerHeight * 0.08;
+        return $scope.profileCalendarHeight = $scope.calendarItemHeight * 5;
+      };
+      calcuateHeight();
+      angular.element($window).bind('resize', function() {
+        return $scope.$apply(function() {
+          return calcuateHeight();
+        });
+      });
+      EventHandler = $famous['famous/core/EventHandler'];
+      $scope.mainScrollHandler = new EventHandler();
+      $scope.profileScrollHandler = new EventHandler();
+      $scope.calendarScrollHandler = new EventHandler();
+      $scope.options = {
+        mainScrollView: {
+          direction: 0,
+          paginated: true
+        },
+        calendarScrollView: {
+          direction: 1
+        }
+      };
       $scope.users = [];
       Wormhole.scope = $scope;
       Wormhole.current_user = function(user) {
@@ -17,6 +44,7 @@
           challenge.challenger_id = parseInt(challenge.challenger_id, 10);
           challenge.opponent_id = parseInt(challenge.opponent_id, 10);
           challenge.timestamp = new Date(parseInt(challenge.timestamp, 10) * 1000);
+          challenge.time = challenge.accepted ? challenge.timestamp : 'pending';
         }
         return $scope.challenges = challenges;
       };
@@ -40,9 +68,10 @@
       $scope.openChallengeForm = function(user) {
         return $scope.userToSmite = user.email;
       };
-      return $scope.clearChallenge = function() {
+      $scope.clearChallenge = function() {
         return $scope.userToSmite = null;
       };
+      debugger;
     }
   ]);
 

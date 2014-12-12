@@ -1,8 +1,37 @@
 lemur.controller 'LemurController', [
-  '$scope', '$element', '$http', 'Wormhole',
-  ($scope, $element, $http, Wormhole) ->
-    $scope.users = []
+  '$scope', '$window', '$element', '$http', '$famous', 'Wormhole',
+  ($scope, $window, $element, $http, $famous, Wormhole) ->
 
+    calcuateHeight = ->
+      $scope.windowHeight = $window.innerHeight
+      $scope.barHeight  = $window.innerHeight * 0.07
+      $scope.bodyHeight = $window.innerHeight - $scope.barHeight
+      $scope.calendarItemHeight = $window.innerHeight * 0.08
+      $scope.profileCalendarHeight = $scope.calendarItemHeight * 5
+    calcuateHeight()
+
+    angular.element($window).bind 'resize', ->
+      $scope.$apply ->
+        calcuateHeight()
+
+
+    EventHandler = $famous['famous/core/EventHandler']
+    $scope.mainScrollHandler = new EventHandler()
+    $scope.profileScrollHandler = new EventHandler()
+    $scope.calendarScrollHandler = new EventHandler()
+
+    $scope.options =
+      mainScrollView:
+        direction: 0
+        paginated: true
+      calendarScrollView:
+        direction: 1
+
+
+
+
+
+    $scope.users = []
     Wormhole.scope = $scope
 
     Wormhole.current_user = (user) ->
@@ -17,6 +46,7 @@ lemur.controller 'LemurController', [
         challenge.challenger_id = parseInt(challenge.challenger_id, 10)
         challenge.opponent_id = parseInt(challenge.opponent_id, 10)
         challenge.timestamp = new Date(parseInt(challenge.timestamp, 10) * 1000)
+        challenge.time = if challenge.accepted then challenge.timestamp else 'pending'
 
       $scope.challenges = challenges
 
@@ -40,4 +70,7 @@ lemur.controller 'LemurController', [
 
     $scope.clearChallenge = ->
       $scope.userToSmite = null
+
+    debugger
+
 ]

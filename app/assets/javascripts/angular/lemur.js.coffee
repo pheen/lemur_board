@@ -1,1 +1,1 @@
-@lemur = angular.module('lemur', ['ngResource'])
+@lemur = angular.module('lemur', ['ngResource', 'famous.angular'])

@@ -3,14 +3,20 @@
 
 %link{ href: 'assets/stylesheets/login.css', type: 'text/css', rel: 'stylesheet' }
 
+%script{ src: 'assets/javascripts/libraries/famous-global.js',              type: 'text/javascript' }
 %script{ src: 'assets/javascripts/libraries/jquery-2.1.1.js',               type: 'text/javascript' }
 %script{ src: 'assets/javascripts/libraries/jquery.mobile-1.4.4.js',        type: 'text/javascript' }
 %script{ src: 'assets/javascripts/libraries/underscore.js',                 type: 'text/javascript' }
 %script{ src: 'assets/javascripts/libraries/angular.js',                    type: 'text/javascript' }
 %script{ src: 'assets/javascripts/libraries/angular-resource.js',           type: 'text/javascript' }
 %script{ src: 'assets/javascripts/libraries/angular-sanitize.js',           type: 'text/javascript' }
+%script{ src: 'assets/javascripts/libraries/famous-angular.js',             type: 'text/javascript' }
+%script{ src: 'assets/javascripts/main.js',                                 type: 'text/javascript' }
 %script{ src: 'assets/javascripts/angular/lemur.js',                        type: 'text/javascript' }
+-# %script{ src: 'assets/javascripts/angular/controllers/lemur_controller.js', type: 'text/javascript' }
 %script{ src: 'assets/javascripts/angular/controllers/login_controller.js', type: 'text/javascript' }
+%script{ src: 'assets/javascripts/angular/directives/swipeable.js',         type: 'text/javascript' }
+%script{ src: 'assets/javascripts/angular/services/wormhole.js',            type: 'text/javascript' }
 
 %body.swipeable{ 'ng-app' => 'lemur', 'ng-controller' => 'LoginController' }
   %h1 Login
