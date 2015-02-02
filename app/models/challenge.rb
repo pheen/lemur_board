@@ -27,6 +27,7 @@ class Challenge < Ohm::Model
 
   def public_attributes
     {
+      id: id,
       challenger_id: challenger_id,
       opponent_id: opponent_id,
       timestamp: timestamp,
@@ -41,14 +42,13 @@ class Challenge < Ohm::Model
   def self.issue(attrs)
     challenger_email = attrs.fetch('challenger_email') { return false }
     opponent_email   = attrs.fetch('opponent_email')   { return false }
-    time  = attrs.fetch('time')  { return false }
+    timestamp        = attrs.fetch('time')  { return false }
 
     challenger = User.find(email: challenger_email).first
     opponent   = User.find(email: opponent_email).first
-    timestamp  = Time.parse(time).to_i
 
     challenge = create(
-      challenger_id: current_user.id,
+      challenger_id: challenger.id,
       opponent_id: opponent.id,
       timestamp: timestamp,
       accepted: false
@@ -59,7 +59,7 @@ class Challenge < Ohm::Model
       # email opponent notification with calendar invite
     end
 
-    challenge
+    challenge.public_attributes
   end
 
 end

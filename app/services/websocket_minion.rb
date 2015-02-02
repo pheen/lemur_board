@@ -35,15 +35,18 @@ private
 
   def create_response_for(msg)
     @response = if msg['issueChallenge']
-      Challenge.issue(msg['issueChallenge']) or raise MinionError, 'Failed to create challenge'
+      challenge = Challenge.issue(msg['issueChallenge']) or raise MinionError, 'Failed to create challenge'
+      { :new_challenge => challenge }
+    elsif msg['acceptChallenge']
+      challenge = Challenge[msg['acceptChallenge']]
+      challenge.set(:accepted, true)
+      false
     end
   end
 
   def notify_open_sockets
-    json = @response.to_json
-
     @open_sockets.each do |socket|
-      socket.write(json)
+      socket.write(@response.to_json)
     end
   end
 

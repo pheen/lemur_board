@@ -13,7 +13,7 @@ end
 namespace :redis do
   desc 'everybody gets a new car!'
   task :seed do
-    users = 15.times.map do |i|
+    users = 3.times.map do |i|
       attributes = {
         email: "joel#{i}@localhost",
         password_hash: 'password',
@@ -31,7 +31,7 @@ namespace :redis do
         attributes = {
           challenger_id: user.id,
           opponent_id: users.sample.id,
-          timestamp: Time.now.to_i - rand(604800),
+          timestamp: (Time.now.to_i - rand(604800) / 1000),
           accepted: [true, false].sample
         }
 
@@ -132,10 +132,10 @@ private
     result = case file_path
              when /\.coffee/
                 ext = '.coffee'
-               `cpp #{file_path} | coffee -s -p`
+                `cpp #{file_path} | coffee -s -p`
              when /\.scss/
                 ext = '.scss'
-               `scss #{file_path}`
+                `scss #{file_path}`
              end
 
     puts "Compiled #{file_path}"
@@ -145,6 +145,11 @@ private
 
     File.open(dest, 'w') { |file| file.write(result) }
     puts "Saved #{dest}"
+
+    if ext == '.scss'
+      File.open("#{BUILD_DIR}/stylesheets/login.css", 'w') { |file| file.write(`scss #{ASSET_DIR}/stylesheets/login.css.scss`) }
+      File.open("#{BUILD_DIR}/stylesheets/main.css", 'w') { |file| file.write(`scss #{ASSET_DIR}/stylesheets/main.css.scss`) }
+    end
   end
 
   def create_directories

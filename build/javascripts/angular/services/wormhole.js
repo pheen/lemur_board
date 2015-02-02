@@ -4,10 +4,11 @@
   lemur.service('Wormhole', [
     '$log', '$timeout', function($log, $timeout) {
       var eventHorizon;
+      eventHorizon = new Object;
       $timeout(function() {
         var websocket;
         websocket = new WebSocket('ws://' + window.document.location.host);
-        return websocket.onmessage = function(message) {
+        websocket.onmessage = function(message) {
           var data, dataType, value, _results;
           data = angular.fromJson(message.data);
           _results = [];
@@ -19,8 +20,11 @@
           }
           return _results;
         };
+        return eventHorizon.send = function(message) {
+          return websocket.send(message);
+        };
       });
-      return eventHorizon = new Object;
+      return eventHorizon;
     }
   ]);
 

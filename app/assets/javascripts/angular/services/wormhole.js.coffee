@@ -1,6 +1,8 @@
 lemur.service 'Wormhole', [
   '$log', '$timeout',
   ($log, $timeout) ->
+    eventHorizon = new Object
+
     $timeout ->
       websocket = new WebSocket('ws://' + window.document.location.host)
       websocket.onmessage = (message) ->
@@ -10,5 +12,8 @@ lemur.service 'Wormhole', [
           eventHorizon[dataType](value)
           eventHorizon.scope.$apply()
 
-    eventHorizon = new Object
+      eventHorizon.send = (message) ->
+        websocket.send(message)
+
+    eventHorizon
 ]

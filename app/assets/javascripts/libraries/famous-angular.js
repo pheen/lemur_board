@@ -382,8 +382,8 @@ ngFameApp.provider('$famous', function() {
 angular.module('famous.angular')
   .config(['$provide', function($provide) {
     // Hook into the animation system to emit ng-class syncers to surfaces
-    $provide.decorator('$animate', ['$delegate', '$rootScope', '$famous', '$parse', '$famousDecorator',
-                            function($delegate,   $rootScope,   $famous,   $parse,   $famousDecorator) {
+    $provide.decorator('$animate', ['$delegate', '$rootScope', '$famous', '$parse', '$famousDecorator', '$q',
+                            function($delegate,   $rootScope,   $famous,   $parse,   $famousDecorator, $q) {
 
       var Timer   = $famous['famous/utilities/Timer'];
 
@@ -405,7 +405,10 @@ angular.module('famous.angular')
        * considered "enabled" which we do not need.
        */
       var animationHandlers = {
-        enabled: $delegate.enabled
+        enabled: $delegate.enabled,
+        $$removeClassImmediately: $delegate.$$removeClassImmediately,
+        $$addClassImmediately: $delegate.$$addClassImmediately,
+        $$setClassImmediately: $delegate.$$setClassImmediately
       };
 
       angular.forEach(['addClass', 'removeClass'], function(classManipulator) {
@@ -437,7 +440,7 @@ angular.module('famous.angular')
          * directively to their Surfaces whenever possible.
          */
         animationHandlers[classManipulator] = function(element, className, done) {
-         
+
           $delegate[classManipulator](element, className, done);
           if($famous.util.isFaElement(element)){
             var isolate = _getIsolate(element.scope());
@@ -475,7 +478,7 @@ angular.module('famous.angular')
       // because Angular has already negotiated the list of items to add
       // and items to remove. Manually loop through both lists.
       animationHandlers.setClass = function(element, add, remove, done) {
-        
+
         $delegate.setClass(element, add, remove, done);
 
         if ($famous.util.isASurface(element)) {
@@ -507,7 +510,7 @@ angular.module('famous.angular')
           var self = this;
           var selfArgs = arguments;
           var delegateFirst = (operation === 'enter');
-
+          var promise;
 
           var elemScope = element.scope();
 
@@ -518,7 +521,13 @@ angular.module('famous.angular')
           var isolate = _getIsolate(elemScope);
 
           if (delegateFirst === true) {
-             $delegate[operation].apply(this, arguments);
+            promise = $delegate[operation].apply(this, arguments);
+          } else {
+            var defer = $q.defer();
+            Timer.setTimeout(function() {
+              defer.resolve();
+            }, 0);
+            promise = defer.promise;
           }
 
            // Detect if an animation is currently running
@@ -585,6 +594,8 @@ angular.module('famous.angular')
               Timer.setTimeout(doneCallback, animationDuration);
             }
           });
+
+          return promise;
         };
       });
 
@@ -809,7 +820,11 @@ angular.module('famous.angular')
       for (var i = 0; i < pipes.length; i++) {
         for (var j = 0; j < targets.length; j++) {
           if (targets[j] !== undefined && pipes[i] !== undefined) {
-            targets[j][method](pipes[i]);
+            if (targets[j]._isModifier){
+              targets[j]._object[method](pipes[i]);
+            } else {
+              targets[j][method](pipes[i]);
+            }
           }
         }
       }
@@ -3314,7 +3329,7 @@ angular.module('famous.angular')
               });
 
               renderNode.on('click', function(event, touchend) {
-                scope.$apply(function() {
+                scope.$evalAsync(function() {
                   clickHandler(scope, {$event: (touchend || event)});
                 });
               });
@@ -3841,6 +3856,7 @@ angular.module('famous.angular')
  * @param {Number|Function|Particle} faPerspective  -  Number or array returning a number to which this modifier's perspective (focusZ) should be bound.
  * @param {Transform} faTransform - Manually created Famo.us Transform object (an array) that can be passed to the modifier.  *Will override all other transform attributes.*
  * @param {Number|Function|Transitionable|Particle} faOpacity  -  Number or function returning a number to which this Modifier's opacity should be bound
+ * @param {Array|Function|Transitionable|Particle} faProportions  -  Two element array of [percent of width, percent of height] or function returning an array of numbers to which this Modifier's proportions should be bound
  * @param {Array|Function|Transitionable|Particle} faSize  -  Array of numbers (e.g. [100, 500] for the x- and y-sizes) or function returning an array of numbers to which this Modifier's size should be bound
  * @param {Array|Function|Transitionable|Particle} faOrigin  -  Array of numbers (e.g. [.5, 0] for the x- and y-origins) or function returning an array of numbers to which this Modifier's origin should be bound
  * @param {Array|Function|Transitionable|Particle} faAlign  -  Array of numbers (e.g. [.5, 0] for the x- and y-aligns) or function returning an array of numbers to which this Modifier's align should be bound
@@ -4404,6 +4420,18 @@ angular.module('famous.angular')
               else return ret;
             };
 
+            var _proportionsFn = angular.noop;
+            attrs.$observe('faProportions', function () {
+              _proportionsFn = $parse(attrs.faProportions);
+            });
+            isolate.getProportions = function () {
+              var ret = _proportionsFn(scope);
+              if(ret instanceof Function) return ret();
+              else if(ret instanceof Object && ret.get !== undefined) return ret.get();
+              else if(ret instanceof Particle) return _unwrapParticle(ret);
+              else return ret;
+            };
+
             var _originFn = angular.noop;
             attrs.$observe('faOrigin', function () {
               _originFn = $parse(attrs.faOrigin);
@@ -4419,6 +4447,7 @@ angular.module('famous.angular')
             isolate.modifier = new Modifier({
               transform: isolate.getTransform,
               size: isolate.getSize,
+              proportions: isolate.getProportions,
               opacity: isolate.getOpacity,
               origin: isolate.getOrigin,
               align: isolate.getAlign
@@ -4512,7 +4541,13 @@ angular.module('famous.angular')
                         scope.$watch(function () {
                             return scope.$eval(attrs.faOptions);
                         }, function () {
-                            isolate.renderNode.setOptions(scope.$eval(attrs.faOptions));
+                            if(isolate.renderNode.setOptions){
+                                isolate.renderNode.setOptions(scope.$eval(attrs.faOptions));
+                            }else if(isolate.modifier && isolate.modifier.setOptions){
+                                isolate.modifier.setOptions(scope.$eval(attrs.faOptions));
+                            }else{
+                                throw new Error("fa-options is not supported on " + element[0].tagName);
+                            }
                         }, true);
                     }
                 };
@@ -5647,11 +5682,19 @@ angular.module('famous.angular')
             isolate.show();
 
 
+            var _postDigestScheduled = false;
+
             var updateScrollview = function(init){
+
+              //perf: don't both updating if we've already
+              //scheduled an update for the end of this digest
+              if(_postDigestScheduled === true) return;
+
               // Synchronize the update on the next digest cycle
               // (if this isn't done, $index will not be up-to-date
               // and sort order will be incorrect.)
               scope.$$postDigest(function(){
+                _postDigestScheduled = false;
                 _children.sort(function(a, b){
                   return a.index - b.index;
                 });
@@ -5673,6 +5716,8 @@ angular.module('famous.angular')
                 var viewSeq = new ViewSequence(options);
                 isolate.renderNode.sequenceFrom(viewSeq);
               });
+
+              _postDigestScheduled = true;
             };
 
             $famousDecorator.sequenceWith(
@@ -5798,17 +5843,28 @@ angular.module('famous.angular')
             $famousDecorator.addRole('renderable',isolate);
             isolate.show();
 
+            var _postDigestScheduled = false;
+
             var _updateSequentialLayout = function() {
-              _children.sort(function(a, b) {
-                return a.index - b.index;
-              });
-              isolate.renderNode.sequenceFrom(function(_children) {
-                var _ch = [];
-                angular.forEach(_children, function(c, i) {
-                  _ch[i] = c.renderGate;
+              //perf: don't both updating if we've already
+              //scheduled an update for the end of this digest
+              if(_postDigestScheduled === true) return;
+
+              scope.$$postDigest(function(){
+                _postDigestScheduled = false;
+                _children.sort(function(a, b) {
+                  return a.index - b.index;
                 });
-                return _ch;
-              }(_children));
+                isolate.renderNode.sequenceFrom(function(_children) {
+                  var _ch = [];
+                  angular.forEach(_children, function(c, i) {
+                    _ch[i] = c.renderGate;
+                  });
+                  return _ch;
+                }(_children));
+              });
+
+              _postDigestScheduled = true;
             };
 
             $famousDecorator.sequenceWith(

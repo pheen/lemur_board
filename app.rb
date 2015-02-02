@@ -23,7 +23,6 @@ class Application < Angelo::Base
   end
 
   websocket '/' do |ws|
-    # logged_in? or redirect('/login')
     WebSocketMinion.setup(websockets, ws, current_user)
   end
 

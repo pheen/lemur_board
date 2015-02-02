@@ -5,16 +5,114 @@
 -#     = Tilt::HamlTemplate.new('app/views/challenge.haml').render(self)
 
 %fa-app{ :'ng-controller' => 'LemurController' }
-  %fa-modifier{ :'fa-size' => '[undefined, barHeight]' }
-    %fa-view
+  %fa-modifier( fa-size='[windowWidth / 1.5, growlHeight]' fa-translate='[windowWidth * .1, growlPosition.get(), 0]' )
+    %fa-surface( fa-background-color='"green"' fa-properties='{ zIndex: 2 }' )
+      .growl {{ growl }}
+
+  %fa-modifier( fa-size='barDynHeight.get()' )
+    %fa-container-surface( fa-options="opts.container" )
       %fa-surface{ :'fa-background-color' => '"#1c2123"', :class => 'bar' }
+        .new-challenge{ 'ng-click' => 'openChallengePane()' } +
+      %fa-modifier( fa-translate='[0, windowHeight * .15, 0]' )
+        %fa-scroll-view{ :class => 'opponents', :'fa-options' => 'options.mainScrollView', :'fa-pipe-from' => 'events.opponentsScroll' }
+          %fa-view{ :'ng-repeat' => 'opponent in opponents' }
+            %fa-surface{ :class => 'opponent', :'fa-size' => '[windowHeight * .125, true]', :'fa-pipe-to' => 'events.opponentsScroll' }
+              %img{ :src => 'assets/images/joel.jpg', :'ng-click' => 'selectOpponent(opponent)', :'ng-class' => '{ selected: selectedOpponent(opponent) }' }
+
+      %fa-modifier( fa-translate='[0, windowHeight * .35, 0]' fa-size='[windowWidth * .25, windowHeight * .18]' )
+        %fa-modifier( fa-translate='[windowWidth * .0625, 0, 0]' )
+          %fa-container-surface( fa-options="opts.datepickerContainer" )
+            %fa-scroll-view( id='year' fa-options='options.challengeDateScrollView' fa-pipe-from='events.challengeYearScroll' fa-start-index='challengeYearIndex')
+              %fa-view( fa-index='0' )
+                %fa-modifier( fa-size='[windowWidth * .25, windowHeight * .06]' )
+                  %fa-surface( fa-pipe-to='events.challengeYearScroll' )
+              %fa-view( ng-repeat='year in years' fa-index='$index + 1' )
+                %fa-modifier( fa-size='[windowWidth * .25, windowHeight * .06]' )
+                  %fa-surface( fa-pipe-to='events.challengeYearScroll' )
+                    .date {{ year }}
+              %fa-view( fa-index='years.length + 1' )
+                %fa-modifier( fa-size='[windowWidth * .25, windowHeight * .06]' )
+                  %fa-surface( fa-pipe-to='events.challengeYearScroll' )
+        %fa-modifier( fa-translate='[(windowWidth * .0625) + (windowWidth * .25) + (windowWidth * .0625), 0, 0]' )
+          %fa-container-surface( fa-options="opts.datepickerContainer" )
+            %fa-scroll-view( id='month' fa-options='options.challengeDateScrollView' fa-pipe-from='events.challengeMonthScroll' fa-start-index='challengeMonthIndex')
+              %fa-view( fa-index='0' )
+                %fa-modifier( fa-size='[windowWidth * .25, windowHeight * .06]' )
+                  %fa-surface( fa-pipe-to='events.challengeMonthScroll' )
+              %fa-view( ng-repeat='month in months' fa-index='$index + 1' )
+                %fa-modifier( fa-size='[windowWidth * .25, windowHeight * .06]' )
+                  %fa-surface( fa-pipe-to='events.challengeMonthScroll' )
+                    .date {{ month }}
+              %fa-view( fa-index='months.length + 1' )
+                %fa-modifier( fa-size='[windowWidth * .25, windowHeight * .06]' )
+                  %fa-surface( fa-pipe-to='events.challengeMonthScroll' )
+        %fa-modifier( fa-translate='[(windowWidth * .0625) + (windowWidth * .25) + (windowWidth * .0625) + (windowWidth * .25) + (windowWidth * .0625), 0, 0]' )
+          %fa-container-surface( fa-options="opts.datepickerContainer" )
+            %fa-scroll-view( id='day' fa-options='options.challengeDateScrollView' fa-pipe-from='events.challengeDayScroll' fa-start-index='challengeDayIndex')
+              %fa-view( fa-index='0' )
+                %fa-modifier( fa-size='[windowWidth * .25, windowHeight * .06]' )
+                  %fa-surface( fa-pipe-to='events.challengeDayScroll' )
+              %fa-view( ng-repeat='day in days[challengeMonth]' fa-index='$index + 1' )
+                %fa-modifier( fa-size='[windowWidth * .25, windowHeight * .06]' )
+                  %fa-surface( fa-pipe-to='events.challengeDayScroll' )
+                    .date {{ day }}
+              %fa-view( fa-index='days[challengeMonth].length + 1' )
+                %fa-modifier( fa-size='[windowWidth * .25, windowHeight * .06]' )
+                  %fa-surface( fa-pipe-to='events.challengeDayScroll' )
+
+      %fa-modifier( fa-translate='[0, windowHeight * .55, 0]' fa-size='[windowWidth * .25, windowHeight * .18]' )
+        %fa-modifier( fa-translate='[windowWidth * .0625, 0, 0]' )
+          %fa-container-surface( fa-options="opts.datepickerContainer" )
+            %fa-scroll-view( id='hour' fa-options='options.challengeDateScrollView' fa-pipe-from='events.challengeHourScroll' fa-start-index='challengeHourIndex')
+              %fa-view( fa-index='0' )
+                %fa-modifier( fa-size='[windowWidth * .25, windowHeight * .06]' )
+                  %fa-surface( fa-pipe-to='events.challengeHourScroll' )
+              %fa-view( ng-repeat='hour in hours' fa-index='$index + 1' )
+                %fa-modifier( fa-size='[windowWidth * .25, windowHeight * .06]' )
+                  %fa-surface( fa-pipe-to='events.challengeHourScroll' )
+                    .date {{ hour }}
+              %fa-view( fa-index='hours.length + 1' )
+                %fa-modifier( fa-size='[windowWidth * .25, windowHeight * .06]' )
+                  %fa-surface( fa-pipe-to='events.challengeHourScroll' )
+        %fa-modifier( fa-translate='[(windowWidth * .0625) + (windowWidth * .25) + (windowWidth * .0625), 0, 0]' )
+          %fa-container-surface( fa-options="opts.datepickerContainer" )
+            %fa-scroll-view( id='min' fa-options='options.challengeDateScrollView' fa-pipe-from='events.challengeMinScroll' fa-start-index='challengeMinIndex')
+              %fa-view( fa-index='0' )
+                %fa-modifier( fa-size='[windowWidth * .25, windowHeight * .06]' )
+                  %fa-surface( fa-pipe-to='events.challengeMinScroll' )
+              %fa-view( ng-repeat='min in mins' fa-index='$index + 1' )
+                %fa-modifier( fa-size='[windowWidth * .25, windowHeight * .06]' )
+                  %fa-surface( fa-pipe-to='events.challengeMinScroll' )
+                    .date {{ min }}
+              %fa-view( fa-index='mins.length + 1' )
+                %fa-modifier( fa-size='[windowWidth * .25, windowHeight * .06]' )
+                  %fa-surface( fa-pipe-to='events.challengeMinScroll' )
+        %fa-modifier( fa-translate='[(windowWidth * .0625) + (windowWidth * .25) + (windowWidth * .0625) + (windowWidth * .25) + (windowWidth * .0625), 0, 0]' )
+          %fa-container-surface( fa-options="opts.datepickerContainer" )
+            %fa-scroll-view( id='per' fa-options='options.challengeDateScrollView' fa-pipe-from='events.challengePerScroll' fa-start-index='challengePerIndex')
+              %fa-view( fa-index='0' )
+                %fa-modifier( fa-size='[windowWidth * .25, windowHeight * .06]' )
+                  %fa-surface( fa-pipe-to='events.challengePerScroll' )
+              %fa-view( ng-repeat='period in pers' fa-index='$index + 1' )
+                %fa-modifier( fa-size='[windowWidth * .25, windowHeight * .06]' )
+                  %fa-surface( fa-pipe-to='events.challengePerScroll' )
+                    .date {{ period }}
+              %fa-view( fa-index='pers.length + 1' )
+                %fa-modifier( fa-size='[windowWidth * .25, windowHeight * .06]' )
+                  %fa-surface( fa-pipe-to='events.challengePerScroll' )
+
+      %fa-modifier( fa-translate='[0, windowHeight * .75, 0]' )
+        %fa-surface()
+          .submit( ng-click='submitChallenge()' ) Send Challenge
+
   %fa-modifier{ :'fa-translate' => '[0, barHeight,  0]' }
     %fa-view
-      %fa-scroll-view{ :class => 'calendar', :'fa-options' => 'options.mainScrollView', :'fa-pipe-from' => 'mainScrollHandler' }
+      %fa-scroll-view{ :class => 'calendar', :'fa-options' => 'options.mainScrollView', :'fa-pipe-from' => 'events.mainScroll' }
         %fa-view
           %fa-modifier{ :'fa-size' => '[undefined, bodyHeight]' }
-            %fa-surface{ :'fa-background-color' => '"#2c3337"', :'fa-pipe-to' => 'mainScrollHandler' }
-              %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
+            %fa-surface{ :'fa-background-color' => '"#2c3337"', :'fa-pipe-to' => 'events.mainScroll' }
+              .portrait
+                %img{ :src => 'assets/images/joel.jpg' }
               .stats
                 %span.wins
                   10
@@ -26,190 +124,31 @@
                   .place
                     losses
             %fa-modifier{ :'fa-size' => '[undefined, windowHeight * .6]', :'fa-translate' => '[0, windowHeight * .33, 0]' }
-              %fa-scroll-view{ :'fa-options' => 'options.calendarScrollView', :'fa-pipe-from' => 'mainScrollHandler' }
-                %fa-view{ :'ng-repeat' => 'challenge in challenges | orderBy:"-timestamp"' }
-                  %fa-surface{ :'fa-size' => '[undefined, calendarItemHeight]', :'fa-pipe-to' => 'mainScrollHandler' }
+              %fa-scroll-view{ :'fa-options' => 'options.calendarScrollView', :'fa-pipe-from' => 'events.mainScroll' }
+                %fa-view{ :'ng-repeat' => 'challenge in challengesToAccept | orderBy:"-timestamp"', :'fa-index' => '0' }
+                  %fa-surface{ :class => 'calendar-item-container', :'fa-size' => '[undefined, calendarItemHeight]', :'fa-background-color' => '"#32393c"',  :'fa-pipe-to' => 'events.mainScroll' }
+                    .calendar-item.to_accept( ng-click='acceptChallenge(challenge)' )
+                      .item-portrait
+                        %img{ :src => 'assets/images/joel.jpg' }
+                      %span.time
+                        New Challenge!
+                        %br
+                        %br
+                        {{ challenge.time }}
+                      .item-portrait
+                        %img{ :src => 'assets/images/joel.jpg' }
+                %fa-view{ :'ng-repeat' => 'challenge in challenges | orderBy:"-timestamp"', :'fa-index' => '1' }
+                  %fa-surface{ :class => 'calendar-item-container', :'fa-size' => '[undefined, calendarItemHeight]', :'fa-background-color' => '"#32393c"',  :'fa-pipe-to' => 'events.mainScroll' }
                     .calendar-item
-                      %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
+                      .item-portrait
+                        %img{ :src => 'assets/images/joel.jpg' }
                       %span.time
                         {{ challenge.time }}
-                      %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-
-
-
-
-                -# %fa-view
-                -#   %fa-surface{ :'fa-size' => '[undefined, calendarItemHeight]', :'fa-pipe-to' => 'mainScrollHandler' }
-                -#     .calendar-item
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -#       %span
-                -#         pending
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -# %fa-view
-                -#   %fa-surface{ :'fa-size' => '[undefined, calendarItemHeight]', :'fa-pipe-to' => 'mainScrollHandler' }
-                -#     .calendar-item
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -#       %span
-                -#         pending
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -# %fa-view
-                -#   %fa-surface{ :'fa-size' => '[undefined, calendarItemHeight]', :'fa-pipe-to' => 'mainScrollHandler' }
-                -#     .calendar-item
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -#       %span
-                -#         pending
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -# %fa-view
-                -#   %fa-surface{ :'fa-size' => '[undefined, calendarItemHeight]', :'fa-pipe-to' => 'mainScrollHandler' }
-                -#     .calendar-item
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -#       %span
-                -#         pending
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -# %fa-view
-                -#   %fa-surface{ :'fa-size' => '[undefined, calendarItemHeight]', :'fa-pipe-to' => 'mainScrollHandler' }
-                -#     .calendar-item
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -#       %span
-                -#         pending
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -# %fa-view
-                -#   %fa-surface{ :'fa-size' => '[undefined, calendarItemHeight]', :'fa-pipe-to' => 'mainScrollHandler' }
-                -#     .calendar-item
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -#       %span
-                -#         pending
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -# %fa-view
-                -#   %fa-surface{ :'fa-size' => '[undefined, calendarItemHeight]', :'fa-pipe-to' => 'mainScrollHandler' }
-                -#     .calendar-item
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -#       %span
-                -#         pending
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -# %fa-view
-                -#   %fa-surface{ :'fa-size' => '[undefined, calendarItemHeight]', :'fa-pipe-to' => 'mainScrollHandler' }
-                -#     .calendar-item
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -#       %span
-                -#         pending
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -# %fa-view
-                -#   %fa-surface{ :'fa-size' => '[undefined, calendarItemHeight]', :'fa-pipe-to' => 'mainScrollHandler' }
-                -#     .calendar-item
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -#       %span
-                -#         pending
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -# %fa-view
-                -#   %fa-surface{ :'fa-size' => '[undefined, calendarItemHeight]', :'fa-pipe-to' => 'mainScrollHandler' }
-                -#     .calendar-item
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -#       %span
-                -#         pending
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -# %fa-view
-                -#   %fa-surface{ :'fa-size' => '[undefined, calendarItemHeight]', :'fa-pipe-to' => 'mainScrollHandler' }
-                -#     .calendar-item
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -#       %span
-                -#         pending
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -# %fa-view
-                -#   %fa-surface{ :'fa-size' => '[undefined, calendarItemHeight]', :'fa-pipe-to' => 'mainScrollHandler' }
-                -#     .calendar-item
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -#       %span
-                -#         pending
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -# %fa-view
-                -#   %fa-surface{ :'fa-size' => '[undefined, calendarItemHeight]', :'fa-pipe-to' => 'mainScrollHandler' }
-                -#     .calendar-item
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -#       %span
-                -#         pending
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -# %fa-view
-                -#   %fa-surface{ :'fa-size' => '[undefined, calendarItemHeight]', :'fa-pipe-to' => 'mainScrollHandler' }
-                -#     .calendar-item
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -#       %span
-                -#         pending
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -# %fa-view
-                -#   %fa-surface{ :'fa-size' => '[undefined, calendarItemHeight]', :'fa-pipe-to' => 'mainScrollHandler' }
-                -#     .calendar-item
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -#       %span
-                -#         pending
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -# %fa-view
-                -#   %fa-surface{ :'fa-size' => '[undefined, calendarItemHeight]', :'fa-pipe-to' => 'mainScrollHandler' }
-                -#     .calendar-item
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -#       %span
-                -#         pending
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -# %fa-view
-                -#   %fa-surface{ :'fa-size' => '[undefined, calendarItemHeight]', :'fa-pipe-to' => 'mainScrollHandler' }
-                -#     .calendar-item
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -#       %span
-                -#         pending
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -# %fa-view
-                -#   %fa-surface{ :'fa-size' => '[undefined, calendarItemHeight]', :'fa-pipe-to' => 'mainScrollHandler' }
-                -#     .calendar-item
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -#       %span
-                -#         pending
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -# %fa-view
-                -#   %fa-surface{ :'fa-size' => '[undefined, calendarItemHeight]', :'fa-pipe-to' => 'mainScrollHandler' }
-                -#     .calendar-item
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -#       %span
-                -#         pending
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -# %fa-view
-                -#   %fa-surface{ :'fa-size' => '[undefined, calendarItemHeight]', :'fa-pipe-to' => 'mainScrollHandler' }
-                -#     .calendar-item
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -#       %span
-                -#         pending
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -# %fa-view
-                -#   %fa-surface{ :'fa-size' => '[undefined, calendarItemHeight]', :'fa-pipe-to' => 'mainScrollHandler' }
-                -#     .calendar-item
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
-                -#       %span
-                -#         pending l
-                -#       %img{ :src => 'assets/images/joel.jpg', :class => 'profile' }
+                      .item-portrait
+                        %img{ :src => 'assets/images/joel.jpg' }
         %fa-view
           %fa-modifier{ :'fa-size' => '[undefined, bodyHeight]' }
-            %fa-surface{ :'fa-background-color' => "'blue'", :'fa-pipe-to' => 'mainScrollHandler' }
-        %fa-scroll-view{ :'fa-options' => 'options.calendarScrollView', :'fa-pipe-from' => 'mainScrollHandler' }
-          %fa-view
-            %fa-surface{ :class => 'calendar-item', :'fa-size' => '[undefined, bodyHeight / 6]', :'fa-pipe-to' => 'mainScrollHandler' }
-          %fa-view
-            %fa-surface{ :class => 'calendar-item', :'fa-size' => '[undefined, bodyHeight / 6]', :'fa-pipe-to' => 'mainScrollHandler' }
-          %fa-view
-            %fa-surface{ :class => 'calendar-item', :'fa-size' => '[undefined, bodyHeight / 6]', :'fa-pipe-to' => 'mainScrollHandler' }
-          %fa-view
-            %fa-surface{ :class => 'calendar-item', :'fa-size' => '[undefined, bodyHeight / 6]', :'fa-pipe-to' => 'mainScrollHandler' }
-          %fa-view
-            %fa-surface{ :class => 'calendar-item', :'fa-size' => '[undefined, bodyHeight / 6]', :'fa-pipe-to' => 'mainScrollHandler' }
-          %fa-view
-            %fa-surface{ :class => 'calendar-item', :'fa-size' => '[undefined, bodyHeight / 6]', :'fa-pipe-to' => 'mainScrollHandler' }
-          %fa-view
-            %fa-surface{ :class => 'calendar-item', :'fa-size' => '[undefined, bodyHeight / 6]', :'fa-pipe-to' => 'mainScrollHandler' }
-          %fa-view
-            %fa-surface{ :class => 'calendar-item', :'fa-size' => '[undefined, bodyHeight / 6]', :'fa-pipe-to' => 'mainScrollHandler' }
-          %fa-view
-            %fa-surface{ :class => 'calendar-item', :'fa-size' => '[undefined, bodyHeight / 6]', :'fa-pipe-to' => 'mainScrollHandler' }
-          %fa-view
-            %fa-surface{ :class => 'calendar-item', :'fa-size' => '[undefined, bodyHeight / 6]', :'fa-pipe-to' => 'mainScrollHandler' }
-          %fa-view
-            %fa-surface{ :class => 'calendar-item', :'fa-size' => '[undefined, bodyHeight / 6]', :'fa-pipe-to' => 'mainScrollHandler' }
-          %fa-view
-            %fa-surface{ :class => 'calendar-item', :'fa-size' => '[undefined, bodyHeight / 6]', :'fa-pipe-to' => 'mainScrollHandler' }
+            %fa-surface{ :'fa-background-color' => "'blue'", :'fa-pipe-to' => 'events.mainScroll' }
+        %fa-view
+          %fa-modifier{ :'fa-size' => '[undefined, bodyHeight]' }
+            %fa-surface{ :'fa-background-color' => "'green'", :'fa-pipe-to' => 'events.mainScroll' }
